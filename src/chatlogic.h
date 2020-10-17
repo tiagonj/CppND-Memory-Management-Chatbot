@@ -20,7 +20,14 @@ private:
     // data handles (owned)
     // Task 3: Make nodes an exclusive resource of ChatLogic
     std::vector<std::unique_ptr<GraphNode>> _nodes;
-    std::vector<GraphEdge *> _edges;
+
+    // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+    // ChatLogic no longer needs to keep a vector of edges:
+    //   a) They're not manipulated by ChatLogic, and
+    //   b) As soon as one is created, a GraphEdges is moved
+    //      to its new owner (a GraphNode)
+    // (the declaration below must remain commented out)
+    //std::vector<GraphEdge *> _edges;
 
     ////
     //// EOF STUDENT CODE

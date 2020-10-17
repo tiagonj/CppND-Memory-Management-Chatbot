@@ -47,11 +47,19 @@ ChatLogic::~ChatLogic()
     }
 */
 
+    // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+    // Nodes now have ownership of their outgoing GraphEdges, thus
+    // all GraphEdges will have an owner (NB: all of them have an 
+    // originating node, by definition), therefore ChatLogic no longer
+    // needs to store a vector of edges (it has no use for them)
+    // (the for-loop below must remain commented out)
+/*
     // delete all edges
     for (auto it = std::begin(_edges); it != std::end(_edges); ++it)
     {
         delete *it;
     }
+*/
 
     ////
     //// EOF STUDENT CODE
@@ -134,7 +142,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
                         // Task 3: Make nodes an exclusive resource of ChatLogic
                         // Note we're now using references to unique_ptr<GraphNode> instead of direct pointers
-                        // Note we're now creating new nodes using make_unique()
+                        // Note we're now creating new nodes by using make_unique()
 
                         // check if node with this ID exists already
                         auto newNode = std::find_if(_nodes.begin(), _nodes.end(), [&id](std::unique_ptr<GraphNode>& node) { return node->GetID() == id; });
@@ -172,18 +180,22 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
                             auto parentNode = std::find_if(_nodes.begin(), _nodes.end(), [&parentToken](std::unique_ptr<GraphNode>& node) { return node->GetID() == std::stoi(parentToken->second); });
                             auto childNode = std::find_if(_nodes.begin(), _nodes.end(), [&childToken](std::unique_ptr<GraphNode>& node) { return node->GetID() == std::stoi(childToken->second); });
 
+                            // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+                            // Specifically, the edge is owned by the parent node
+                            // Note we're now creating new edges by using make_unique()
+
                             // create new edge
-                            GraphEdge *edge = new GraphEdge(id);
+                            auto edge = std::make_unique<GraphEdge>(id);
                             edge->SetChildNode((*childNode).get());
                             edge->SetParentNode((*parentNode).get());
-                            _edges.push_back(edge);
+                            //_edges.push_back(edge); // A vector of edges no longer exists in ChatLogic
 
                             // find all keywords for current node
                             AddAllTokensToElement("KEYWORD", tokens, *edge);
 
                             // store reference in child node and parent node
-                            (*childNode)->AddEdgeToParentNode(edge);
-                            (*parentNode)->AddEdgeToChildNode(edge);
+                            (*childNode)->AddParentEdge(edge.get());
+                            (*parentNode)->AddChildEdge(std::move(edge));   // GraphNode exclusely owns all of its outgoing (child) edges
                         }
 
                         ////

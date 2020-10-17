@@ -1,6 +1,7 @@
 #ifndef GRAPHNODE_H_
 #define GRAPHNODE_H_
 
+#include <memory>
 #include <vector>
 #include <string>
 #include "chatbot.h"
@@ -15,8 +16,11 @@ private:
     //// STUDENT CODE
     ////
 
+    // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+    // GraphNode now owns and manages the memory for outgoing (child) edges
+
     // data handles (owned)
-    std::vector<GraphEdge *> _childEdges;  // edges to subsequent nodes
+    std::vector<std::unique_ptr<GraphEdge>> _childEdges;  // edges to subsequent nodes
 
     // data handles (not owned)
     std::vector<GraphEdge *> _parentEdges; // edges to preceding nodes 
@@ -43,8 +47,8 @@ public:
 
     // proprietary functions
     void AddToken(std::string token); // add answers to list
-    void AddEdgeToParentNode(GraphEdge *edge);
-    void AddEdgeToChildNode(GraphEdge *edge);
+    void AddParentEdge(GraphEdge *edge);
+    void AddChildEdge(std::unique_ptr<GraphEdge>&& edge);
 
     //// STUDENT CODE
     ////

@@ -16,6 +16,10 @@ GraphNode::~GraphNode()
     // GraphNode, until we have proper memory management in place
     //delete _chatBot;
 
+    // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+    // Note that outgoing (child) edges are now automatically 
+    // deleted as part of the tear-down of this GraphNode
+
     ////
     //// EOF STUDENT CODE
 }
@@ -25,18 +29,21 @@ void GraphNode::AddToken(std::string token)
     _answers.push_back(token);
 }
 
-void GraphNode::AddEdgeToParentNode(GraphEdge *edge)
+void GraphNode::AddParentEdge(GraphEdge *edge)
 {
     _parentEdges.push_back(edge);
 }
 
-void GraphNode::AddEdgeToChildNode(GraphEdge *edge)
-{
-    _childEdges.push_back(edge);
-}
-
 //// STUDENT CODE
 ////
+
+// Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
+// Child edges are now owned by the GraphNode object (not ChatLogic)
+void GraphNode::AddChildEdge(std::unique_ptr<GraphEdge>&& edge)
+{
+    _childEdges.emplace_back(std::move(edge));
+}
+
 void GraphNode::MoveChatbotHere(ChatBot *chatbot)
 {
     _chatBot = chatbot;
@@ -56,7 +63,7 @@ GraphEdge *GraphNode::GetChildEdgeAtIndex(int index)
     //// STUDENT CODE
     ////
 
-    return _childEdges[index];
+    return _childEdges[index].get();
 
     ////
     //// EOF STUDENT CODE
