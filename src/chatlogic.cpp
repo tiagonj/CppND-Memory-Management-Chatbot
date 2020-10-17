@@ -17,11 +17,19 @@ ChatLogic::ChatLogic()
     //// STUDENT CODE
     ////
 
+    // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+    // ChatBot is now constructed by LoadAnswerGraphFromFile and immediately
+    // moved into the root GraphNode (the code block below must remain 
+    // commented out)
+/*
     // create instance of chatbot
     _chatBot = new ChatBot("../images/chatbot.png");
 
     // add pointer to chatlogic so that chatbot answers can be passed on to the GUI
     _chatBot->SetChatLogicHandle(this);
+*/
+    // This will be assigned from LoadAnswerGraphFromFile onwards
+    _chatBot = nullptr;
 
     ////
     //// EOF STUDENT CODE
@@ -32,8 +40,11 @@ ChatLogic::~ChatLogic()
     //// STUDENT CODE
     ////
 
+    // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+    // ChatLogic no longer owns the ChatBot instance therefore it must not
+    // attempt to delete it (the line below must remain commented out)
     // delete chatbot instance
-    delete _chatBot;
+    // delete _chatBot;
 
     // Task 3: Make nodes an exclusive resource of ChatLogic
     // Because nodes are now managed by unique_ptr's we no longer need
@@ -243,10 +254,22 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
         }
     }
 
+    // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+
+    // create instance of chatbot on the Stack (*not* on the Heap)
+    ChatBot bot("../images/chatbot.png");
+
+    // add pointer to chatlogic so that chatbot answers can be passed on to the GUI
+    bot.SetChatLogicHandle(this);
+
     // add chatbot to graph root node
-    _chatBot->SetRootNode(rootNode);
-    rootNode->MoveChatbotHere(_chatBot);
-    
+    bot.SetRootNode(rootNode);
+    rootNode->MoveChatbotHere(std::make_unique<ChatBot>(std::move(bot)));
+    // NOTE: std::make_unique<ChatBot>() above results in memory allocation 
+    // i.e. a ChatBot instance is allocated on the Heap; The std::move(bot)
+    // results in the move constructor being called to initialise that,
+    // instance, where the "source" of the move is the local ChatBot bot.
+
     ////
     //// EOF STUDENT CODE
 }

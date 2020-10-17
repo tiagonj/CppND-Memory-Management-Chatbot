@@ -1,7 +1,9 @@
 #include "graphedge.h"
 #include "graphnode.h"
 
-GraphNode::GraphNode(int id)
+// Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+// Explicit call to the no-arguments constructor for ChatBot object
+GraphNode::GraphNode(int id) : _chatBot()
 {
     _id = id;
 }
@@ -19,6 +21,13 @@ GraphNode::~GraphNode()
     // Task 4: Make outgoing (child) edges an exclusive resource of GraphNode
     // Note that outgoing (child) edges are now automatically 
     // deleted as part of the tear-down of this GraphNode
+
+    // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+    // NOTE: the ChatBot object owned by this class is now automatically
+    // destroyed when this destructor executes, regardless of whether the
+    // chat bot is currently located in this node. If the chat bot is located
+    // in another node then this node's _chatBot contains null data and its
+    // destructor doesn't do anything special, other than print to cout.
 
     ////
     //// EOF STUDENT CODE
@@ -44,16 +53,30 @@ void GraphNode::AddChildEdge(std::unique_ptr<GraphEdge>&& edge)
     _childEdges.emplace_back(std::move(edge));
 }
 
-void GraphNode::MoveChatbotHere(ChatBot *chatbot)
+// Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+void GraphNode::MoveChatbotHere(std::unique_ptr<ChatBot>&& chatbot)
 {
-    _chatBot = chatbot;
+    // Transfer ownership of ChatBot to this node
+    _chatBot = std::move(chatbot);
+
+    // Note that what is being moved here (line above) is the 
+    // unique_ptr ownership. The ChatBot object instance is 
+    // still living in the (same memory location within the)
+    // Heap.
+
+    // We could have instead moved the ChatBot object itself
+    // around but that would have required that each node have
+    // a ChatBot object member (instead of a (smart) pointer)
+    // in order to be able to "receive" a chat bot that is 
+    // moved from a different node, and this would be a waste
+    // of memory.
+
     _chatBot->SetCurrentNode(this);
 }
 
 void GraphNode::MoveChatbotToNewNode(GraphNode *newNode)
 {
-    newNode->MoveChatbotHere(_chatBot);
-    _chatBot = nullptr; // invalidate pointer at source
+    newNode->MoveChatbotHere(std::move(_chatBot));
 }
 ////
 //// EOF STUDENT CODE

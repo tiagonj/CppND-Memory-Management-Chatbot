@@ -91,7 +91,10 @@ ChatBot::ChatBot(ChatBot& other)
 
     if (&other != this) // No-op if placement-new is used on itself
     {
-        this->_image = new wxBitmap(*other._image); // See NOTE above
+        this->_image = 
+            (other._image == NULL) ?
+                nullptr : new wxBitmap(*other._image); // See NOTE above
+
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
         this->_chatLogic = other._chatLogic;
@@ -126,11 +129,14 @@ ChatBot::ChatBot(ChatBot&& other)
 // Copy assignment operator
 ChatBot& ChatBot::operator=(ChatBot& other)
 {
-    std::cout << "ChatBot (Copy) Assignment Operator" << std::endl;
+    std::cout << "ChatBot Copy Assignment Operator" << std::endl;
 
     if (&other != this) // No-op if called on itself
     {
-        this->_image = new wxBitmap(*other._image); // See NOTE above
+        this->_image = 
+            (other._image == NULL) ?
+                nullptr : new wxBitmap(*other._image); // See NOTE above
+
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
         this->_chatLogic = other._chatLogic;
@@ -141,7 +147,7 @@ ChatBot& ChatBot::operator=(ChatBot& other)
 // Move assignment operator
 ChatBot& ChatBot::operator=(ChatBot&& other)
 {
-    std::cout << "ChatBot (Move) Assignment Operator" << std::endl;
+    std::cout << "ChatBot Move Assignment Operator" << std::endl;
 
     if (&other != this) // No-op if called on itself
     {
@@ -205,6 +211,11 @@ void ChatBot::SetCurrentNode(GraphNode *node)
 {
     // update pointer to current node
     _currentNode = node;
+
+    // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
+    // We need to let ChatLogic know that this object is now the current
+    // valid ChatBot object
+    _chatLogic->SetChatbotHandle(this);
 
     // select a random node answer (if several answers should exist)
     std::vector<std::string> answers = _currentNode->GetAnswers();
