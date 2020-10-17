@@ -93,7 +93,7 @@ ChatBot::ChatBot(ChatBot& other)
     {
         this->_image = 
             (other._image == NULL) ?
-                nullptr : new wxBitmap(*other._image); // See NOTE above
+                NULL : new wxBitmap(*other._image); // See NOTE above
 
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
@@ -108,18 +108,13 @@ ChatBot::ChatBot(ChatBot&& other)
 
     if (&other != this) // No-op if placement-new is used on itself
     {
-        if (other._image != NULL)
-        {
-            this->_image = new wxBitmap(*other._image); // See NOTE above
-            delete other._image;
-            other._image = NULL;
-        }
-
+        this->_image = other._image;
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
         this->_chatLogic = other._chatLogic;
 
         // Invalidate internals of remaining "moved" ChatBot object
+        other._image = NULL;
         other._currentNode = nullptr;
         other._rootNode = nullptr;
         other._chatLogic = nullptr;
@@ -135,7 +130,7 @@ ChatBot& ChatBot::operator=(ChatBot& other)
     {
         this->_image = 
             (other._image == NULL) ?
-                nullptr : new wxBitmap(*other._image); // See NOTE above
+                NULL : new wxBitmap(*other._image); // See NOTE above
 
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
@@ -151,18 +146,13 @@ ChatBot& ChatBot::operator=(ChatBot&& other)
 
     if (&other != this) // No-op if called on itself
     {
-        if (other._image != NULL)
-        {
-            this->_image = new wxBitmap(*other._image); // See NOTE above
-            delete other._image;
-            other._image = NULL;
-        }
-
+        this->_image = other._image;
         this->_currentNode = other._currentNode;
         this->_rootNode = other._rootNode;
         this->_chatLogic = other._chatLogic;
 
         // Invalidate internals of remaining "moved" ChatBot object
+        other._image = NULL;
         other._currentNode = nullptr;
         other._rootNode = nullptr;
         other._chatLogic = nullptr;

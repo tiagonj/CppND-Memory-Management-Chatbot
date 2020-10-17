@@ -54,24 +54,12 @@ void GraphNode::AddChildEdge(std::unique_ptr<GraphEdge>&& edge)
 }
 
 // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
-void GraphNode::MoveChatbotHere(std::unique_ptr<ChatBot>&& chatbot)
+void GraphNode::MoveChatbotHere(ChatBot chatbot)
 {
-    // Transfer ownership of ChatBot to this node
+    // Transfer ownership of ChatBot to this node by moving it
     _chatBot = std::move(chatbot);
 
-    // Note that what is being moved here (line above) is the 
-    // unique_ptr ownership. The ChatBot object instance is 
-    // still living in the (same memory location within the)
-    // Heap.
-
-    // We could have instead moved the ChatBot object itself
-    // around but that would have required that each node have
-    // a ChatBot object member (instead of a (smart) pointer)
-    // in order to be able to "receive" a chat bot that is 
-    // moved from a different node, and this would be a waste
-    // of memory.
-
-    _chatBot->SetCurrentNode(this);
+    _chatBot.SetCurrentNode(this);
 }
 
 void GraphNode::MoveChatbotToNewNode(GraphNode *newNode)

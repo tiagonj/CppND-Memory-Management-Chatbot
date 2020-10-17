@@ -264,11 +264,7 @@ void ChatLogic::LoadAnswerGraphFromFile(std::string filename)
 
     // add chatbot to graph root node
     bot.SetRootNode(rootNode);
-    rootNode->MoveChatbotHere(std::make_unique<ChatBot>(std::move(bot)));
-    // NOTE: std::make_unique<ChatBot>() above results in memory allocation 
-    // i.e. a ChatBot instance is allocated on the Heap; The std::move(bot)
-    // results in the move constructor being called to initialise that,
-    // instance, where the "source" of the move is the local ChatBot bot.
+    rootNode->MoveChatbotHere(std::move(bot));
 
     ////
     //// EOF STUDENT CODE

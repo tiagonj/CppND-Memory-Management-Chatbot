@@ -26,7 +26,11 @@ private:
     std::vector<GraphEdge *> _parentEdges; // edges to preceding nodes
 
     // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
-    std::unique_ptr<ChatBot> _chatBot;
+    // There is only one actual ChatBot at any given time, which means that for
+    // all nodes bar one their ChatBot object member variable (_chatBot) will
+    // not contain valid information. The one which does contain the actual
+    // chat bot is the node where the chat bot is located at that point in time.
+    ChatBot _chatBot;
 
     ////
     //// EOF STUDENT CODE
@@ -56,7 +60,7 @@ public:
     ////
 
     // Task 5: ChatBot is owned by one GraphNode (it is Moved between nodes)
-    void MoveChatbotHere(std::unique_ptr<ChatBot>&& chatbot);
+    void MoveChatbotHere(ChatBot chatbot);
 
     ////
     //// EOF STUDENT CODE

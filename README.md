@@ -107,11 +107,27 @@ Once the application has been built, you can run the application from the base f
 * `make run`, or
 * `cd build && ./membot`
 
-After using the application and closing it, you will find that it produced the following output:
+After launching the application, typing "pointers" (pressing ENTER) and then closing the application, you will find that it produced the following output:
 
 ```
+$ ./membot
 ChatBot Constructor
 ChatBot Move Constructor
+ChatBot Move Assignment Operator
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Move Constructor
+ChatBot Move Assignment Operator
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Destructor
+ChatBot Destructor
 ChatBot Destructor
 ChatBot Destructor
 ```
+
+Each of the final `ChatBot Destructor` lines corresponds to the ChatBot object member variables in each of the GraphNode objects getting destroyed getting destroyed at the end of the application because the GraphNodes themselves are destroyed then. For a graph with N nodes we should expect to
+see N of those messages.
