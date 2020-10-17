@@ -11,7 +11,10 @@ GraphNode::~GraphNode()
     //// STUDENT CODE
     ////
 
-    delete _chatBot; 
+    // Task 0: ChatBot is being deleted several times. Let's
+    // temporarily circumvent this by not deleting it from
+    // GraphNode, until we have proper memory management in place
+    //delete _chatBot;
 
     ////
     //// EOF STUDENT CODE
