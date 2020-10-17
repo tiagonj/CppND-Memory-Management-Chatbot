@@ -117,8 +117,14 @@ ChatBotPanelDialog::ChatBotPanelDialog(wxWindow *parent, wxWindowID id)
     //// STUDENT CODE
     ////
 
+    // Task 1: Make ChatLogic an excluse resource of ChatBotPanelDialog.
+    // Note that we are creating a unique_ptr to manage the ChatLogic
+    // object (heap) memory for us. The unique_ptr will clean up (free)
+    // that (heap) memory when its dtor runs, which occurs during the
+    // destruction of this ChatBotPanelDialog object).
+
     // create chat logic instance
-    _chatLogic = new ChatLogic(); 
+    _chatLogic = std::make_unique<ChatLogic>();
 
     // pass pointer to chatbot dialog so answers can be displayed in GUI
     _chatLogic->SetPanelDialogHandle(this);
@@ -135,7 +141,13 @@ ChatBotPanelDialog::~ChatBotPanelDialog()
     //// STUDENT CODE
     ////
 
-    delete _chatLogic;
+    // Task 1: Make ChatLogic an excluse resource of ChatBotPanelDialog.
+    // Because the ChatLogic object (heap memory) is now managed by a 
+    // unique_ptr we don't have to manually delete it: unique_ptr does 
+    // that for us when its destructor runs, which occurs as part of the
+    // destruction of the ChatBotPanelDialog object (of which the 
+    // unique_ptr is a member). The line below must remain commented out.
+    //delete _chatLogic;
 
     ////
     //// EOF STUDENT CODE
