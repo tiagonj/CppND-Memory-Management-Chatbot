@@ -30,6 +30,13 @@ public:
     //// STUDENT CODE
     ////
 
+    // Task 2: ChatBot class must comply with the Rule of Five
+    // (NB: destructor is already declared above)
+    ChatBot(ChatBot& other);               // Copy constructor
+    ChatBot(ChatBot&& other);              // Move constructor
+    ChatBot& operator=(ChatBot& other);    // Copy assignment operator
+    ChatBot& operator=(ChatBot&& other);   // Move assignment operator
+
     ////
     //// EOF STUDENT CODE
 

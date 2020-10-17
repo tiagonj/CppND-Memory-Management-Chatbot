@@ -12,7 +12,8 @@
 ChatBot::ChatBot()
 {
     // invalidate data handles
-    _image = nullptr;
+    _image = NULL;
+    _currentNode = nullptr;
     _chatLogic = nullptr;
     _rootNode = nullptr;
 }
@@ -23,6 +24,7 @@ ChatBot::ChatBot(std::string filename)
     std::cout << "ChatBot Constructor" << std::endl;
     
     // invalidate data handles
+    _currentNode = nullptr;
     _chatLogic = nullptr;
     _rootNode = nullptr;
 
@@ -44,6 +46,123 @@ ChatBot::~ChatBot()
 
 //// STUDENT CODE
 ////
+
+// Task 2: ChatBot class must comply with the Rule of Five
+
+/*
+NOTE: The wxWidgets documentation for the wxBitmap class 
+(https://docs.wxwidgets.org/3.0/classwx_bitmap.html) states that the copy constructor
+(https://docs.wxwidgets.org/3.0/classwx_bitmap.html#abfaa21ec563a64ea913af918150db900)
+uses reference counting (https://docs.wxwidgets.org/3.0/overview_refcount.html), and
+provides example code for when the developer wishes to make an actual copy.
+
+In fact, according to the reference counting documentation (link above) the wxBitmap
+class (as well as several other clases) effectively function as a shared pointer:
+
+> Many wxWidgets objects use a technique known as reference counting, also known as
+> copy on write (COW). This means that when an object is assigned to another, no 
+> copying really takes place. Only the reference count on the shared object data is 
+> incremented and both objects share the same data (a very fast operation).
+
+and
+
+> When a COW object destructor is called, it may not delete the data: if it's shared,
+> the destructor will just decrement the shared data's reference count without 
+> destroying it. Only when the destructor of the last object owning the data is 
+> called, the data is really destroyed. Just like all other COW-things, this happens 
+> transparently to the class users so that you shouldn't care about it.
+
+If the above were not the case, one could have been tempted to wrap the wxBitmap 
+(_image) member with a shared_ptr to ensure that this resource was
+  a) only allocated (on the heap) once (for efficiency),
+  b) was thus shared between all instances of ChatBot, and
+  c) was correctly destroyed (once) once all ChatBot instances are themselves 
+     destroyed.
+
+However, given that wxBitmap already provides shared_ptr-like behaviour we will
+take advantage of this and simply "copy" _image by employing its copy constructor.
+
+*/
+
+// Copy constructor
+ChatBot::ChatBot(ChatBot& other)
+{
+    std::cout << "ChatBot Copy Constructor" << std::endl;
+
+    if (&other != this) // No-op if placement-new is used on itself
+    {
+        this->_image = new wxBitmap(*other._image); // See NOTE above
+        this->_currentNode = other._currentNode;
+        this->_rootNode = other._rootNode;
+        this->_chatLogic = other._chatLogic;
+    }
+}
+
+// Move constructor
+ChatBot::ChatBot(ChatBot&& other)
+{
+    std::cout << "ChatBot Move Constructor" << std::endl;
+
+    if (&other != this) // No-op if placement-new is used on itself
+    {
+        if (other._image != NULL)
+        {
+            this->_image = new wxBitmap(*other._image); // See NOTE above
+            delete other._image;
+            other._image = NULL;
+        }
+
+        this->_currentNode = other._currentNode;
+        this->_rootNode = other._rootNode;
+        this->_chatLogic = other._chatLogic;
+
+        // Invalidate internals of remaining "moved" ChatBot object
+        other._currentNode = nullptr;
+        other._rootNode = nullptr;
+        other._chatLogic = nullptr;
+    }
+}
+
+// Copy assignment operator
+ChatBot& ChatBot::operator=(ChatBot& other)
+{
+    std::cout << "ChatBot (Copy) Assignment Operator" << std::endl;
+
+    if (&other != this) // No-op if called on itself
+    {
+        this->_image = new wxBitmap(*other._image); // See NOTE above
+        this->_currentNode = other._currentNode;
+        this->_rootNode = other._rootNode;
+        this->_chatLogic = other._chatLogic;
+    }
+    return *this;
+}
+
+// Move assignment operator
+ChatBot& ChatBot::operator=(ChatBot&& other)
+{
+    std::cout << "ChatBot (Move) Assignment Operator" << std::endl;
+
+    if (&other != this) // No-op if called on itself
+    {
+        if (other._image != NULL)
+        {
+            this->_image = new wxBitmap(*other._image); // See NOTE above
+            delete other._image;
+            other._image = NULL;
+        }
+
+        this->_currentNode = other._currentNode;
+        this->_rootNode = other._rootNode;
+        this->_chatLogic = other._chatLogic;
+
+        // Invalidate internals of remaining "moved" ChatBot object
+        other._currentNode = nullptr;
+        other._rootNode = nullptr;
+        other._chatLogic = nullptr;
+    }
+    return *this;
+}
 
 ////
 //// EOF STUDENT CODE
