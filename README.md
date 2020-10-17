@@ -63,3 +63,55 @@ ChatBot Move Assignment Operator
 ChatBot Destructor
 ChatBot Destructor 
 ```
+
+# Project submission notes
+
+## Makefile
+
+A Makefile has been provided which provides the following options:
+
+* `make clean` removes the `./build` folder and all its contents
+* `make debug` builds the `./build/membot` application
+* `make debug` builds the `./build/membot` application using debug flags
+* `make run` runs the application
+
+**NOTE:** The application must be run from within the `./build` folder (this is due to hardcoded paths, in the source code, to images within the `./images/` folder)
+
+
+## Development & testing environment
+
+This project has been developed and tested on a Ubuntu machine:
+
+```
+18.04.5 LTS (Bionic Beaver)
+Linux 5.4.0-48-generic #52~18.04.1-Ubuntu x86_64 GNU/Linux
+
+$ sudo apt search libwxgtk3.0
+libwxgtk3.0-0v5/bionic,now 3.0.4+dfsg-3 amd64 [installed,automatic]
+  wxWidgets Cross-platform C++ GUI toolkit (GTK+ runtime)
+
+libwxgtk3.0-dev/bionic,now 3.0.4+dfsg-3 amd64 [installed]
+  wxWidgets Cross-platform C++ GUI toolkit (GTK+ development)
+
+$ /usr/bin/cmake --version
+cmake version 3.18.1
+
+$ /usr/bin/c++ --version
+c++ (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+```
+
+
+## Running the application
+
+Once the application has been built, you can run the application from the base folder (where the `Makefile` resides) by running:
+* `make run`, or
+* `cd build && ./membot`
+
+After using the application and closing it, you will find that it produced the following output:
+
+```
+ChatBot Constructor
+ChatBot Move Constructor
+ChatBot Destructor
+ChatBot Destructor
+```
